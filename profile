@@ -15,6 +15,25 @@ alias dkk='docker kill'
 alias dkrm='docker rm -f'
 alias dks='docker stop'
 alias dkr='docker run -itd'
+function dkexec() {
+    container_id=$1
+    if [ -z "$container_id" ]; then
+        echo "Usage: dkexec <container_id>"
+        return 1
+    fi
+
+    # Check if bash is available in the container
+    if docker exec -it $container_id /bin/bash -c 'exit' >/dev/null 2>&1; then
+        echo "Entering bash in container $container_id"
+        docker exec -it $container_id /bin/bash
+    # If bash is not available, check if sh is available
+    elif docker exec -it $container_id /bin/sh -c 'exit' >/dev/null 2>&1; then
+        echo "Entering sh in container $container_id"
+        docker exec -it $container_id /bin/sh
+    else
+        echo "Neither bash nor sh is available in container $container_id"
+    fi
+}
 
 alias yumup='yum update'
 alias aptup='apt update'
