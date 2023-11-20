@@ -98,3 +98,29 @@ function pys() {
         echo "Neither Python 2 nor Python 3 is available"
     fi
 }
+
+port() {
+    local host=$1
+    local port=$2
+    local nc_result nmap_result output_color
+
+    echo "Checking port $port on $host..."
+
+    # 使用 nc 检测端口，抑制输出
+    nc -zv $host $port 2>&1 >/dev/null
+    nc_result=$?
+
+    # 使用 nmap 检测端口，抑制输出
+    nmap_result=$(nmap -p $port $host 2>&1 | grep "$port" | grep -oE "(open|closed|filtered)")
+
+    # 确定输出颜色
+    if [ "$nc_result" -eq 0 ] || [ "$nmap_result" = "open" ]; then
+        output_color="\033[0;32m" # 绿色
+    else
+        output_color="\033[0;31m" # 红色
+    fi
+
+    # 输出结果
+    echo -e "nc result: $([ $nc_result -eq 0 ] && echo -e "${output_color}open\033[0m" || echo -e "${output_color}closed\033[0m")"
+    echo -e "nmap result: ${output_color}${nmap_result:-unreachable}\033[0m"
+}
