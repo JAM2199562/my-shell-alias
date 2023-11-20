@@ -107,7 +107,7 @@ port() {
     echo "Checking port $port on $host..."
 
     # 使用 nc 检测端口，抑制输出
-    nc -zv $host $port 2>&1 >/dev/null
+    nc -zv -w 3 $host $port 2>&1 >/dev/null
     nc_result=$?
 
     # 使用 nmap 检测端口，抑制输出
