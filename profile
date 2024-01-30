@@ -65,7 +65,9 @@ alias ~="cd ~"
 function bkk() {
     if [[ -n "$1" ]]; then
         local current_date=$(date +%Y%m%d%H%M)
-        local backup_name="${1}.${current_date}"
+        local dir_name=$(dirname "$1")
+        local base_name=$(basename "$1")
+        local backup_name="${dir_name}/${base_name}.${current_date}"
         if [ -d "$1" ]; then
             # 是目录时使用递归复制
             cp -r "$1" "$backup_name"
