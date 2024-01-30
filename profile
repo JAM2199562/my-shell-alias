@@ -65,21 +65,23 @@ alias ~="cd ~"
 function bkk() {
     if [[ -n "$1" ]]; then
         local current_date=$(date +%Y%m%d%H%M)
+        local backup_name="${1}.${current_date}"
         if [ -d "$1" ]; then
             # 是目录时使用递归复制
-            cp -r "$1" "${1}_${current_date}"
+            cp -r "$1" "$backup_name"
         elif [ -f "$1" ]; then
             # 是文件时直接复制
-            cp "$1" "${1}_${current_date}"
+            cp "$1" "$backup_name"
         else
             echo "Error: '$1' is not a valid file or directory"
             return 1
         fi
-        echo "Backup of '$1' created as '${1}_${current_date}'"
+        echo "Backup of '$1' created as '$backup_name'"
     else
         echo "Usage: bkk <filename/directory>"
     fi
 }
+
 
 function tcpd() {
     if [[ -z "$1" ]]; then
