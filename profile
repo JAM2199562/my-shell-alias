@@ -108,10 +108,26 @@ function pys() {
     fi
 }
 
-port() {
+function port() {
     local host=$1
     local port=$2
     local nc_result nmap_result output_color
+
+    # 检查是否存在 nc 命令
+    if ! command -v nc &> /dev/null; then
+        echo "nc command not found. Installing..."
+        
+        # 检查系统包管理器是否是 apt 或 yum
+        if command -v apt-get &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y netcat
+        elif command -v yum &> /dev/null; then
+            sudo yum install -y nc
+        else
+            echo "Unsupported package manager. Please install nc manually."
+            return 1
+        fi
+    fi
 
     echo "Checking port $port on $host..."
 
